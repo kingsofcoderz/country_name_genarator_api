@@ -1,20 +1,15 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 import random
 
 app = FastAPI()
 
-consonants = ["b", "c", "d", "f", "g", "h", "j", "k", "l", "m", "n",
-              "p", "q", "r", "s", "t", "v", "w", "x", "y", "z", "th", "zh", "ph", "ch"]
-vowels = ["a", "e", "i", "o", "u", "ae", "ai", "ou", "ia", "ea"]
-
-def random_syllable():
-    return random.choice(consonants).capitalize() + random.choice(vowels)
-
-def generate_country_name():
-    syllables = random.randint(2, 4)
-    name = ''.join(random_syllable() for _ in range(syllables)) + "ia"
-    return name
+# List of premade syllables to build names from
+SYLLABLES = [
+    "ka", "lo", "va", "ra", "ze", "to", "na", "mi", "shi", "ko", 
+    "li", "ga", "ba", "di", "tu", "ne", "xo", "qui", "jo", "fi"
+]
 
 @app.get("/countryname")
-def get_country_name():
-    return {"name": generate_country_name()}
+def get_country_name(syllables: int = Query(3, ge=1, le=5)):
+    name = ''.join(random.choice(SYLLABLES).capitalize() for _ in range(syllables)) + "ia"
+    return {"name": name}
